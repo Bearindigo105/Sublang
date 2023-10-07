@@ -53,7 +53,7 @@ export function tokenize(sourceCode: string): Token[]{
             default:
                 //handle multi-char tokens
                 if(isInt(src[0])){
-                    
+                    //TODO MULTI-CHAR TOKENS
                 }
         }
     }
