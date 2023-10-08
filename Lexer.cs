@@ -7,57 +7,71 @@
  */
 
 
-using System.Data.SqlTypes;
-using System.Runtime.InteropServices;
-
 namespace Sublang{
 
     public class Lexer{
 
         private static bool IsLexical(char schar){
-            return Array.IndexOf(Keywords.KEYWORDS, schar) >= 0;
+            return Array.IndexOf(Keywords.KEYWORDS, schar) > -1;
         }
-        
 
-        public static Tuple<TkType, char?[]>[] Tokenize(string source){
+        public static Tuple<TkType, char?[]>[] Tokenize(List<char> source){
 
             char?[] noVal = {null};
 
-            Tuple<TkType, char?[]>[] TokenArray = Array.Empty<Tuple<TkType,char?[]>>();
+            List<Tuple<TkType, char?[]>> TokenList = new List<Tuple<TkType, char?[]>>();
             
-            while(source.Length > 0){
-                if(IsLexical(source[0])){
-                    char lex = source[0];
-                    source.Remove(0);
-                    TokenArray.Append(Tuple.Create((TkType)lex, noVal));
-                }else if(source[0] == '"'){
-                    char?[] value = Array.Empty<char?>();
-                    do{
-                        value.Append(source[0]);
-                        source.Remove(0);
-                    }while(source[0] != '"');
-                    TokenArray.Append(Tuple.Create(TkType.String, value));
-                }else if(char.IsDigit(source[0])){
-                    char?[] value = Array.Empty<char?>();
-                    do{
-                        value.Append(source[0]);
-                        source.Remove(0);
-                    }while(char.IsDigit(source[0]));
-                    TokenArray.Append(Tuple.Create(TkType.Number, value));
-                }else if(source[0] == '$'){
-                    char?[] value = Array.Empty<char?>();
-                    do{
-                        value.Append(source[0]);
-                        source.Remove(0);
-                    }while(!IsLexical(source[0]));
-                    TokenArray.Append(Tuple.Create(TkType.Identifier, value));
-                }
-                TokenArray.Append(Tuple.Create(TkType.Error, noVal));
-                
-            }
-            TokenArray.Append(Tuple.Create(TkType.Whitespace, noVal));
+            while(source.Count > 0){
 
-            return TokenArray;
+                if(IsLexical(source[0])){
+                
+                    char lex = source[0];
+                    source.RemoveAt(0);
+                
+                    TokenList.Add(Tuple.Create((TkType)lex, noVal));
+                
+                }else if(source[0] == '"'){
+                
+                    char?[] value = Array.Empty<char?>();
+                
+                    do{
+                
+                        value.Append(source[0]);
+                        source.RemoveAt(0);
+                
+                    }while(source[0] != '"');
+                
+                    TokenList.Add(Tuple.Create(TkType.String, value));
+                }else if(char.IsDigit(source[0])){
+                
+                    char?[] value = Array.Empty<char?>();
+                
+                    do{
+                
+                        value.Append(source[0]);
+                        source.RemoveAt(0);
+                
+                    }while(char.IsDigit(source[0]));
+                
+                    TokenList.Add(Tuple.Create(TkType.Number, value));
+                }else if(source[0] == '$'){
+                
+                    char?[] value = Array.Empty<char?>();
+                
+                    do{
+                
+                        value.Append(source[0]);
+                        source.RemoveAt(0);
+                
+                    }while(!IsLexical(source[0]));
+                
+                    TokenList.Add(Tuple.Create(TkType.Identifier, value));
+                }
+                TokenList.Add(Tuple.Create(TkType.Error, noVal));
+            }
+            TokenList.Add(Tuple.Create(TkType.Whitespace, noVal));
+
+            return TokenList.ToArray();
         }
     }
 }
