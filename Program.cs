@@ -8,4 +8,4 @@
 
 using Sublang;
 
-Console.WriteLine(Lexer.Tokenize("l "));
+Console.WriteLine(Lexer.Tokenize("l $testVar = 23"));
